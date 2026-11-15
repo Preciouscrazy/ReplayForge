@@ -38,13 +38,13 @@ FNV-1a 64-bit mixes the tick index followed by each player's X, Y, and HP as fou
 - Positions can overlap or cross. Collision resolution is outside this prototype's scope.
 - Checksums detect divergence but do not identify the underlying bug or prevent malicious recomputation of a trace.
 - No rollback, networking, state snapshots, RNG streams, animation, or real players are included.
-- The source-input file and output replay file must differ; do not point the output to unrelated important files.
+- The source-input file and output replay file must differ. Recording refuses existing destinations and pre-existing staging files, writes to a sibling temporary path, checks closure, and renames after success. This prevents routine accidental overwrites and many partial-file failures, but does not guarantee durable storage after power loss or safe behavior under concurrent writers. Use a new filename to record again.
 - The written replay format is versioned so changes to rules should also update fixtures and format compatibility documentation.
 
 ## Verification checklist
 
 - Configure and compile in a fresh build directory.
-- Run 13 C++ unit tests and both CTest entries.
+- Run 13 C++ unit tests, the eight CLI integration tests, and all three CTest entries.
 - Verify the committed eight-tick golden trace; change one checksum in a copy and verify failure at the expected tick.
 - Build with at least one additional compiler and compare golden output.
 - Run the source encoding check.

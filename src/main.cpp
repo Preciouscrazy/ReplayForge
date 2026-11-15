@@ -5,6 +5,46 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <system_error>
+
+namespace {
+namespace fs = std::filesystem;
+
+// Record to a sibling file first; a failed write must not leave a partial replay.
+void save_replay(const fs::path& path, const std::vector<replayforge::Input>& actions) {
+    if (fs::exists(path) || fs::is_symlink(path)) {
+        throw std::invalid_argument("Refusing to overwrite existing output");
+    }
+
+    fs::path temporary = path;
+    temporary += ".tmp";
+    if (fs::exists(temporary) || fs::is_symlink(temporary)) {
+        throw std::invalid_argument("Temporary output already exists");
+    }
+
+    // Clean up an incomplete staged file if serialization, flush or rename fails.
+    struct RemoveOnExit {
+        fs::path path;
+        ~RemoveOnExit() {
+            std::error_code error;
+            fs::remove(path, error);
+        }
+    } cleanup{temporary};
+
+    {
+        std::ofstream output(temporary, std::ios::binary);
+        if (!output) throw std::runtime_error("Cannot create temporary replay file");
+        replayforge::write_replay(output, actions);
+        output.close();
+        if (!output) throw std::runtime_error("Could not finish writing replay");
+    }
+
+    if (fs::exists(path) || fs::is_symlink(path)) {
+        throw std::invalid_argument("Output was created before replay was finalized");
+    }
+    fs::rename(temporary, path);
+}
+} // namespace
 
 int main(int argc, char** argv) {
     if (argc != 3 && argc != 4) {
@@ -22,9 +62,7 @@ int main(int argc, char** argv) {
             std::ifstream input(argv[2]);
             if (!input) throw std::runtime_error("Cannot open action file");
             const auto actions = replayforge::read_actions(input);
-            std::ofstream output(argv[3]);
-            if (!output) throw std::runtime_error("Cannot create replay file");
-            replayforge::write_replay(output, actions);
+            save_replay(argv[3], actions);
             std::cout << "Recorded " << actions.size() << " frames to " << argv[3] << '\n';
             return 0;
         }
