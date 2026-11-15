@@ -50,7 +50,7 @@ For a negative test, copy `data/sample_trace.rfg`, replace a stored checksum wit
 
 This starter includes **13 C++ unit tests** and **2 CTest checks** (unit suite + committed golden replay). Tests cover movement bounds, simultaneous attacks, inactive defeated players, deterministic state evolution, in-memory record/replay round trips, tampering, malformed input, and file-format validation.
 
-GitHub Actions is configured to build and test on Ubuntu and Windows **after this code is published to a repository**. Those cloud jobs are not claimed as passed until a real GitHub run confirms them. See [validation evidence](evidence/local-validation.txt).
+**Cross-platform CI verified:** GitHub Actions successfully configured, built, ran CTest, and completed the text-hygiene check on both **Ubuntu** and **Windows** for commit [`1dc2e7f`](https://github.com/Preciouscrazy/ReplayForge/commit/1dc2e7f54657facd026e41ac457d046dda489683). See the [passing CI run](https://github.com/Preciouscrazy/ReplayForge/actions/runs/43686211485), [CI verification record](evidence/github-actions-validation.md), [local Linux validation](evidence/local-validation.txt), and [Windows validation](evidence/windows-validation.md).
 
 ## Source layout
 
@@ -64,7 +64,7 @@ tests/test_main.cpp              no third-party test framework
 data/                            sample actions + expected replay
 .github/workflows/tests.yml      cross-platform CI configuration
 tools/check_text.py              source-encoding and invisible-character scan
- docs/design.md                  architecture, constraints, tradeoffs
+docs/design.md                   architecture, constraints, tradeoffs
 ```
 
 ## Key design decisions
