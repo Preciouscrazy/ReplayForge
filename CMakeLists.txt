@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.20)
+project(ReplayForge VERSION 0.1.0 LANGUAGES CXX)
+
+add_library(replayforge_core src/engine.cpp src/replay.cpp)
+target_include_directories(replayforge_core PUBLIC include)
+target_compile_features(replayforge_core PUBLIC cxx_std_20)
+if(MSVC)
+  target_compile_options(replayforge_core PRIVATE /W4 /WX)
+else()
+  target_compile_options(replayforge_core PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
+
+add_executable(replayforge src/main.cpp)
+target_link_libraries(replayforge PRIVATE replayforge_core)
+
+include(CTest)
+if(BUILD_TESTING)
+  add_executable(replayforge_tests tests/test_main.cpp)
+  target_link_libraries(replayforge_tests PRIVATE replayforge_core)
+  add_test(NAME core_tests COMMAND replayforge_tests)
+  add_test(NAME golden_replay COMMAND replayforge verify "${CMAKE_CURRENT_SOURCE_DIR}/data/sample_trace.rfg")
+endif()

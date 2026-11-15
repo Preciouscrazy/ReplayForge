@@ -1,0 +1,11 @@
+/build/
+/build-*/
+/.vs/
+/out/
+*.exe
+*.obj
+*.o
+*.pdb
+*.rfg.tmp
+.DS_Store
+/sample_trace.rfg

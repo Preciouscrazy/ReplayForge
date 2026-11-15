@@ -1,0 +1,9 @@
+ACTIONS 1
+R L
+R L
+A A
+U D
+A N
+R L
+A A
+N N

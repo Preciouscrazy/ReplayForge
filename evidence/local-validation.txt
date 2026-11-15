@@ -1,0 +1,85 @@
+ReplayForge — local build and verification evidence
+Date: 2026-11-11
+Scope: local Linux C++ toolchains; Windows and GitHub Actions NOT yet verified
+
+=== GCC compiler ===
+g++ (Debian 14.2.0-19) 14.2.0
+
+=== Clang compiler ===
+clang version 17.0.0 (https://github.com/swiftlang/llvm-project.git 10999b6d034fe318f3d56c83bddb6572593a8bb0)
+
+=== CMake ===
+cmake version 3.31.6
+
+=== GCC unit tests ===
+PASS initial_state_and_idle_tick
+PASS bounded_movement
+PASS simultaneous_attacks
+PASS distant_attacks_miss
+PASS defeated_player_is_inactive
+PASS deterministic_replay
+PASS roundtrip_serialization
+PASS mismatch_detected_at_exact_tick
+PASS changed_input_detected
+PASS invalid_action_inputs_rejected
+PASS invalid_replay_inputs_rejected
+PASS empty_recording_rejected
+PASS action_symbol_roundtrip
+RESULT 13/13 unit tests passed
+
+=== GCC CTest ===
+Internal ctest changing into directory: /mnt/data/ReplayForge/build
+Test project /mnt/data/ReplayForge/build
+    Start 1: core_tests
+1/2 Test #1: core_tests .......................   Passed    0.00 sec
+    Start 2: golden_replay
+2/2 Test #2: golden_replay ....................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.01 sec
+
+=== Clang unit tests ===
+PASS initial_state_and_idle_tick
+PASS bounded_movement
+PASS simultaneous_attacks
+PASS distant_attacks_miss
+PASS defeated_player_is_inactive
+PASS deterministic_replay
+PASS roundtrip_serialization
+PASS mismatch_detected_at_exact_tick
+PASS changed_input_detected
+PASS invalid_action_inputs_rejected
+PASS invalid_replay_inputs_rejected
+PASS empty_recording_rejected
+PASS action_symbol_roundtrip
+RESULT 13/13 unit tests passed
+
+=== Clang CTest ===
+Internal ctest changing into directory: /mnt/data/ReplayForge/build-clang
+Test project /mnt/data/ReplayForge/build-clang
+    Start 1: core_tests
+1/2 Test #1: core_tests .......................   Passed    0.00 sec
+    Start 2: golden_replay
+2/2 Test #2: golden_replay ....................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.01 sec
+
+=== Golden sample verification ===
+PASS: 8 replay frames verified
+
+=== Intentionally corrupted checksum test ===
+Command: replayforge verify /tmp/replayforge-tampered.rfg
+Expected exit code: 1
+DIVERGENCE at tick 0: expected 0, actual 14876402516516583829
+
+=== CI status ===
+Workflow configured for Ubuntu and Windows. No hosted CI result is claimed for this starter.
+
+=== Source integrity scope ===
+Text source scan checks BOM, UTF-8 decoding, and selected invisible Unicode.
+This does not determine authorship or certify the absence of every possible watermark/provenance signal.
+=== Source hygiene scan ===
+PASS: 16 UTF-8 text files checked (source hygiene only)
